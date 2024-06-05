@@ -16,9 +16,10 @@ const router = createBrowserRouter([
   {
     id: "root",
     path: "/",
-    loader() {
+    loader(request) {
       // Our root route always provides the user, if logged in
-      return { user: fakeAuthProvider.username };
+        console.log('MainLayout loader', request, fakeAuthProvider.username);
+        return { user: fakeAuthProvider.username };
     },
     Component: MainLayout,
     children: [
@@ -38,7 +39,10 @@ const router = createBrowserRouter([
         Component: ProtectedPage,
       },
     ],
-      async action() { return fakeAuthProvider.isAuthenticated }
+    action(params) {
+        console.log('MainLayout action', params)
+        return { user: fakeAuthProvider.username };
+    },
   },
   {
     path: "/logout",

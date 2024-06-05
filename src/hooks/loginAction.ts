@@ -69,7 +69,11 @@ export async function loginActionValues(values : LoginFormValues): Promise<any> 
 
     // Sign in and redirect to the proper destination if successful.
     try {
-        await fakeAuthProvider.signin(username, password);
+        //await fakeAuthProvider.signin(username, password);
+        //await fakeAuthProvider.signin(username, password);
+        return {
+            error: await fakeAuthProvider.signin(username, password),
+        };
     } catch (error) {
         // Unused as of now but this is how you would handle invalid
         // username/password combinations - just like validating the inputs
@@ -79,7 +83,4 @@ export async function loginActionValues(values : LoginFormValues): Promise<any> 
         };
     }
 
-    return {
-        error: null,
-    };
 }

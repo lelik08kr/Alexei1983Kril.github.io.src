@@ -3,8 +3,10 @@ import {
   useActionData,
   useLocation,
   useNavigation,
-  useNavigate,
+    //useNavigate,
+    useSubmit,
 } from "react-router-dom";
+import { fakeAuthProvider } from "./../auth";
 
 
 //export default function LoginPage() {
@@ -68,13 +70,18 @@ const LoginPage: React.FC = () => {
 
     let actionData = useActionData() as { error: string } | undefined;
 
-    const navigate = useNavigate();
+    //let navigate = useNavigate();
+    let submit = useSubmit();
 
-    const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
-        let loginResult = await loginActionValues(values);
-        if (loginResult.error == null) {
-            navigate(values.redirectTo as string || "/")
-        }
+
+    const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
+        loginActionValues(values).then((result) => {
+            if (result.error == null) {
+                let redirectTo = values.redirectTo || '/';
+                console.log('navigate', redirectTo,  fakeAuthProvider.username);
+                return submit(redirectTo, {replace: true});
+            }
+        });
     };
 
     const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {

@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+    //useState
+} from 'react';
 import { Flex, Layout, Menu } from 'antd';
 import { PoweroffOutlined } from '@ant-design/icons';
 import {
@@ -6,7 +8,9 @@ import {
   Outlet,
   useFetcher,
   useRouteLoaderData,
+    useLoaderData,
     useNavigate,
+    //useRevalidator,
 } from "react-router-dom";
 import { fakeAuthProvider } from "./../auth";
 
@@ -69,14 +73,32 @@ const layoutStyle = {
 
     //useLoaderData/useRouteLoaderData
 export default function MainLayout() {
+    let { user } = useRouteLoaderData("root") as { user: string | null };
+    console.log('MainLayout user', user);
+    //const [username, setUsername] = useState('')
+    //let user = useRouteLoaderData("root") as string ;
+    //let { user } = useRouteLoaderData("root") as { user: string | null };
+    //const {user} = useLoaderData() as { user: string | null };
+    //if (user) {
+        //setUsername(user)
+    //}
+    //const revalidator = useRevalidator();
+    //const callback = () => revalidator.revalidate();
+
     return (
-        <Flex gap="middle" wrap>
-            <Layout style={layoutStyle}>
-                <Header style={headerStyle}>
+        <div>
+        {/*
+        //<Flex gap="middle" wrap>
+            //<Layout style={layoutStyle}>
+
+                //<Header style={headerStyle}>
+            */}
                     <HeaderMenu />
-                </Header>
+        {/*
+        //</Header> 
 
                 <Content style={contentStyle}>
+          */}
                     <div>
                         <h1>Auth Example using RouterProvider</h1>
 
@@ -85,11 +107,16 @@ export default function MainLayout() {
                         <Outlet />
 
                     </div>
+        {/*
                 </Content>
+          */}
 
                 <Footer style={footerStyle}>Footer</Footer>
-            </Layout>
-        </Flex>
+        {/*
+            //</Layout>
+        //</Flex>
+          */}
+        </div>
     );
 }
 
@@ -97,6 +124,7 @@ function HeaderMenu() {
     const navigate = useNavigate();
 
     let { user } = useRouteLoaderData("root") as { user: string | null };
+    //let {user} = useLoaderData() as { user: string | null };
 
     const logout = async () => {
         await fakeAuthProvider.signout();
@@ -105,6 +133,7 @@ function HeaderMenu() {
 
 
     const getMenuItems = (user: string | null) => {
+        console.log('user', user);
         let items = [
             {
                 key: 1,
@@ -146,6 +175,7 @@ function HeaderMenu() {
         }
         return items;
     };
+
 
     return (
         <Menu

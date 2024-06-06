@@ -8,6 +8,7 @@ import Layout from './components/Layout';
 import loginAction from './actions/login';
 import loginLoader from './loaders/login';
 import protectedLoader from './loaders/protected';
+import Error404 from './pages/Error404';
 import LoginPage from './pages/Login';
 import PublicPage from './pages/Public';
 import ProtectedPage from './pages/Protected';
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
                 Component: ProtectedPage,
             },
         ],
+        errorElement: <Error404 />,
     },
     {
         path: "/logout",

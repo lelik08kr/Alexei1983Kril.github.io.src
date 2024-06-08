@@ -2,7 +2,7 @@ import type { LoaderFunctionArgs } from "react-router-dom";
 import {
   redirect,
 } from "react-router-dom";
-import { ApiAuthProvider } from "./../auth";
+import { ApiAuthProvider } from "./../providers/Auth";
 
 export default async function loginAction({ request }: LoaderFunctionArgs) {
     let formData = await request.formData();

@@ -3,7 +3,7 @@ import {
   createBrowserRouter,
   redirect,
 } from "react-router-dom";
-import { ApiAuthProvider } from "./auth";
+import { ApiAuthProvider } from "./providers/Auth";
 import Layout from './components/Layout';
 import loginAction from './actions/login';
 import loginLoader from './loaders/login';

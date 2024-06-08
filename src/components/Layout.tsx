@@ -4,7 +4,7 @@ import {
     useNavigate,
     useRouteLoaderData,
 } from "react-router-dom";
-import { ApiAuthProvider } from "./../auth";
+import { ApiAuthProvider } from "./../providers/Auth";
 import { Flex, Layout as AntLayout, Menu } from 'antd';
 import { PoweroffOutlined } from '@ant-design/icons';
 

@@ -2,7 +2,7 @@ import type { LoaderFunctionArgs } from "react-router-dom";
 import {
   redirect,
 } from "react-router-dom";
-import { ApiAuthProvider } from "./../auth";
+import { ApiAuthProvider } from "./../providers/Auth";
 
 export default function protectedLoader({ request }: LoaderFunctionArgs) {
     // If the user is not logged in and tries to access `/protected`, we redirect

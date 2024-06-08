@@ -1,7 +1,7 @@
 import {
   redirect,
 } from "react-router-dom";
-import { ApiAuthProvider } from "./../auth";
+import { ApiAuthProvider } from "./../providers/Auth";
 
 export default async function loginLoader() {
     if (ApiAuthProvider.isAuthenticated) {

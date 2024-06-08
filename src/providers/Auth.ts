@@ -9,7 +9,7 @@ interface IAuthProvider {
 /**
  * This represents some generic auth provider API, like Firebase.
  */
-export const ApiAuthProvider: IAuthProvider = {
+export const FakeApiAuthProvider: IAuthProvider = {
     isAuthenticated: false,
     username: null,
     password: null,
@@ -25,4 +25,8 @@ export const ApiAuthProvider: IAuthProvider = {
         ApiAuthProvider.username = "";
         ApiAuthProvider.password = "";
     },
+};
+
+export const ApiAuthProvider: IAuthProvider = {
+    ...FakeApiAuthProvider,
 };

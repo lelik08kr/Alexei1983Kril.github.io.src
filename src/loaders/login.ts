@@ -1,10 +1,10 @@
 import {
   redirect,
 } from "react-router-dom";
-import { fakeAuthProvider } from "./../auth";
+import { ApiAuthProvider } from "./../auth";
 
 export default async function loginLoader() {
-    if (fakeAuthProvider.isAuthenticated) {
+    if (ApiAuthProvider.isAuthenticated) {
         return redirect("/");
     }
     return null;

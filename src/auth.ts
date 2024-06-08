@@ -1,4 +1,4 @@
-interface AuthProvider {
+interface IAuthProvider {
     isAuthenticated: boolean;
     username: null | string;
     password: null | string;
@@ -9,20 +9,20 @@ interface AuthProvider {
 /**
  * This represents some generic auth provider API, like Firebase.
  */
-export const fakeAuthProvider: AuthProvider = {
+export const ApiAuthProvider: IAuthProvider = {
     isAuthenticated: false,
     username: null,
     password: null,
     async signin(username: string, password: string) {
         await new Promise((r) => setTimeout(r, 500)); // fake delay
-        fakeAuthProvider.isAuthenticated = true;
-        fakeAuthProvider.username = username;
-        fakeAuthProvider.password = password;
+        ApiAuthProvider.isAuthenticated = true;
+        ApiAuthProvider.username = username;
+        ApiAuthProvider.password = password;
     },
     async signout() {
         await new Promise((r) => setTimeout(r, 500)); // fake delay
-        fakeAuthProvider.isAuthenticated = false;
-        fakeAuthProvider.username = "";
-        fakeAuthProvider.password = "";
+        ApiAuthProvider.isAuthenticated = false;
+        ApiAuthProvider.username = "";
+        ApiAuthProvider.password = "";
     },
 };

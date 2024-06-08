@@ -4,7 +4,7 @@ import {
     useNavigate,
     useRouteLoaderData,
 } from "react-router-dom";
-import { fakeAuthProvider } from "./../auth";
+import { ApiAuthProvider } from "./../auth";
 import { Flex, Layout as AntLayout, Menu } from 'antd';
 import { PoweroffOutlined } from '@ant-design/icons';
 
@@ -77,7 +77,7 @@ function HeaderMenu() {
     const navigate = useNavigate();
     // @TODO:  <05-06-24, Evgeniy Blinov <evgeniy_blinov@mail.ru>> : Check logout redirect
     const logout = async () => {
-        await fakeAuthProvider.signout();
+        await ApiAuthProvider.signout();
         navigate("/");
     };
 

@@ -3,7 +3,7 @@ import {
   createBrowserRouter,
   redirect,
 } from "react-router-dom";
-import { fakeAuthProvider } from "./auth";
+import { ApiAuthProvider } from "./auth";
 import Layout from './components/Layout';
 import loginAction from './actions/login';
 import loginLoader from './loaders/login';
@@ -19,7 +19,7 @@ const router = createBrowserRouter([
         path: "/",
         loader() {
             // Our root route always provides the user, if logged in
-            return { user: fakeAuthProvider.username };
+            return { user: ApiAuthProvider.username };
         },
         Component: Layout,
         children: [
@@ -45,7 +45,7 @@ const router = createBrowserRouter([
         path: "/logout",
         async action() {
             // We signout in a "resource route" that we can hit from a fetcher.Form
-            await fakeAuthProvider.signout();
+            await ApiAuthProvider.signout();
             return redirect("/");
         },
     },

@@ -2,6 +2,8 @@ import axios from "axios";
 import * as jose from 'jose';
 import Cookies from "js-cookie";
 
+// @TODO:  <11-06-24, Evgeniy Blinov <evgeniy_blinov@mail.ru>> : REFACTOR IT
+
 
 type AuthResponseData = {
     accessToken: string,

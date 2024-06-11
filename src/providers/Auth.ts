@@ -178,10 +178,17 @@ export const ApiAuthProvider: IAuthProvider = {
                 //password: password,
             //});
             //ApiAuthProvider.authResponseData = data;
-            //if (ApiAuthProvider.authResponseData.accessToken) {
-                //ApiAuthProvider.accessTokenData = jose.decodeJwt(ApiAuthProvider.authResponseData.accessToken);
-                //ApiAuthProvider.username = ApiAuthProvider.accessTokenData.name;
-                //ApiAuthProvider.isAuthenticated = true;
+            //if (this.authResponseData.accessToken) {
+                //this.accessTokenData = jose.decodeJwt(this.authResponseData.accessToken);
+
+                //this.authStorageItem.accessToken = this.authResponseData.accessToken;
+                //this.authStorageItem.refreshToken = this.authResponseData.refreshToken;
+                //this.authStorageItem.accessTokenExp = this.authResponseData.exp;
+                //this.authStorageItem.uuid = this.accessTokenData.uuid;
+
+                //this.username = this.accessTokenData.name;
+
+                //AuthStorage.save(this.authStorageItem);
             //}
         //} catch (error) {
             //if (axios.isAxiosError(error)) {

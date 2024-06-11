@@ -33,7 +33,6 @@ export default function LoginPage() {
     const fetcher = useFetcher();
 
     const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-        console.log('Received values:', values);
         fetcher.submit(
             values,
             { method: "post", action: "/login" }

@@ -19,6 +19,7 @@ const router = createBrowserRouter([
         path: "/",
         loader() {
             // Our root route always provides the user, if logged in
+            ApiAuthProvider.init();
             return { user: ApiAuthProvider.username };
         },
         Component: Layout,

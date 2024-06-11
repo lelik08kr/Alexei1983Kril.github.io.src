@@ -128,7 +128,7 @@ const FakeApiAuthProvider: IAuthProvider = {
                 this.authStorageItem.accessTokenExp = this.authResponseData.exp;
                 this.authStorageItem.uuid = this.accessTokenData.uuid;
 
-                this.username = FakeApiAuthProvider.accessTokenData.name;
+                this.username = this.accessTokenData.name;
 
                 AuthStorage.save(this.authStorageItem);
             }

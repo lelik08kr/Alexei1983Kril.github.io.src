@@ -1,6 +1,7 @@
 import {
     useLocation,
 } from "react-router-dom";
+
 export default function Error404() {
     let location = useLocation();
 

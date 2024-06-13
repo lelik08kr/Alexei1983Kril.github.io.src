@@ -75,7 +75,6 @@ export default function Layout() {
 
 function HeaderMenu() {
     const navigate = useNavigate();
-    // @TODO:  <05-06-24, Evgeniy Blinov <evgeniy_blinov@mail.ru>> : Check logout redirect
     const logout = async () => {
         await ApiAuthProvider.signout();
         navigate("/");

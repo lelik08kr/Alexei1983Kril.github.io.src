@@ -1,9 +1,12 @@
 import axios from "axios";
+import { Axios } from './Api';
 import * as jose from 'jose';
 import Cookies from "js-cookie";
 
 // @TODO:  <11-06-24, Evgeniy Blinov <evgeniy_blinov@mail.ru>> : REFACTOR IT
 
+// @TODO:  <12-06-24, Evgeniy Blinov <evgeniy_blinov@mail.ru>> : REAL uuidv7 type
+type uuidv7 = string;
 
 type AuthResponseData = {
     accessToken: string,
@@ -13,7 +16,7 @@ type AuthResponseData = {
 
 type AccessTokenData = {
     name: string,
-    uuid: string, // @TODO:  <09-06-24, Evgeniy Blinov <evgeniy_blinov@mail.ru>> : uuidv7
+    uuid: uuidv7,
     exp: number,
 }
 
@@ -21,7 +24,7 @@ type AuthStorageItem = {
     accessToken: string,
     refreshToken: string | null,
     accessTokenExp: number | null,
-    uuid: string | null,  // @TODO:  <09-06-24, Evgeniy Blinov <evgeniy_blinov@mail.ru>> : uuidv7
+    uuid: uuidv7 | null,
 };
 
 class AuthStorageError {
@@ -47,9 +50,11 @@ interface IAuthProvider {
     accessTokenData: AccessTokenData,
     authResponseData: AuthResponseData,
     authStorageItem: AuthStorageItem,
-    isAuthenticated(): boolean;
+    applyAuthResponseData(authResponseData: AuthResponseData): boolean;
+    isAuthenticated(): Promise<boolean>;
     init(): void;
-    signin(username: string, password: string): Promise<void>;
+    refreshToken(accessToken: string): Promise<boolean>;
+    signin(username: string, password: string): Promise<boolean>;
     signout(): Promise<void>;
 }
 
@@ -67,7 +72,6 @@ const AuthStorage: IAuthStorage = {
             return false;
         }
     },
-    //if (AuthStorageError.isInstance(result))
     load(): AuthStorageItem | AuthStorageError {
         try {
             let authStorageItem = <AuthStorageItem>{};
@@ -93,11 +97,40 @@ const FakeApiAuthProvider: IAuthProvider = {
     accessTokenData: <AccessTokenData>{},
     authResponseData: <AuthResponseData>{},
     authStorageItem: <AuthStorageItem>{},
-    isAuthenticated() : boolean {
+
+    applyAuthResponseData(authResponseData: AuthResponseData): boolean {
+        this.authResponseData = authResponseData;
+        if (this.authResponseData.accessToken) {
+            this.accessTokenData = jose.decodeJwt(this.authResponseData.accessToken);
+
+            this.authStorageItem.accessToken = this.authResponseData.accessToken;
+            this.authStorageItem.refreshToken = this.authResponseData.refreshToken;
+            this.authStorageItem.accessTokenExp = this.authResponseData.exp;
+            this.authStorageItem.uuid = this.accessTokenData.uuid;
+
+            this.username = this.accessTokenData.name;
+
+            AuthStorage.save(this.authStorageItem);
+            return true;
+        }
+        return false;
+    },
+
+    async isAuthenticated() : Promise<boolean> {
+        console.log('ApiAuthProvider:isAuthenticated');
         if (this.username === 'undefined' || !this.username) { return false; }
         if (this.authStorageItem.accessToken === 'undefined' || !this.authStorageItem.accessToken) { return false; }
+        if (this.authStorageItem.accessTokenExp) {
+            if (this.authStorageItem.accessTokenExp > (new Date().getTime())) {
+                return await this.refreshToken(this.authStorageItem.accessToken);
+            }
+        } else {
+            console.log('accessToken is null');
+            return false;
+        }
         return true;
     },
+
     init(): void {
         let authStorageItem = AuthStorage.load();
         if (!AuthStorageError.isInstance(authStorageItem)) {
@@ -108,7 +141,33 @@ const FakeApiAuthProvider: IAuthProvider = {
             }
         }
     },
-    async signin(username: string, password: string) {
+
+    async refreshToken(accessToken: string): Promise<boolean> {
+        try {
+            const data = await new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve({
+                        accessToken: accessToken,
+                        refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMDE4ZjcxYmQtZWJhNS03MDk2LTkwNTUtNDk3Y2UyZjE4Mzk2IiwiZXhwIjoxNzE4NTU3MzY2fQ.WimNsz6HMBnHIbmDuxAgPb1viYkdUuQitKjyrNc776Q",
+                        exp: Math.round((new Date(new Date().getTime() + (24 * 60 * 60))).getTime() / 1000 ), // tomorrow
+                    })
+                    , 500})
+            });
+            return this.applyAuthResponseData(<AuthResponseData>data);
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                console.log('Axios error', error)
+                //handleAxiosError(error);
+            } else {
+                console.log('catch error', error)
+                //handleUnexpectedError(error);
+            }
+        }
+        return false;
+
+    },
+
+    async signin(username: string, password: string): Promise<boolean> {
         try {
             const data = await new Promise((resolve) => {
                 setTimeout(() => {
@@ -119,19 +178,7 @@ const FakeApiAuthProvider: IAuthProvider = {
                     })
                     , 500})
             });
-            this.authResponseData = <AuthResponseData>data;
-            if (this.authResponseData.accessToken) {
-                this.accessTokenData = jose.decodeJwt(this.authResponseData.accessToken);
-
-                this.authStorageItem.accessToken = this.authResponseData.accessToken;
-                this.authStorageItem.refreshToken = this.authResponseData.refreshToken;
-                this.authStorageItem.accessTokenExp = this.authResponseData.exp;
-                this.authStorageItem.uuid = this.accessTokenData.uuid;
-
-                this.username = this.accessTokenData.name;
-
-                AuthStorage.save(this.authStorageItem);
-            }
+            return this.applyAuthResponseData(<AuthResponseData>data);
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 console.log('Axios error', error)
@@ -141,7 +188,9 @@ const FakeApiAuthProvider: IAuthProvider = {
                 //handleUnexpectedError(error);
             }
         }
+        return false;
     },
+
     async signout() {
         try {
             await new Promise((r) => setTimeout(r, 500)); // fake delay
@@ -159,37 +208,15 @@ const FakeApiAuthProvider: IAuthProvider = {
 };
 
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-const AxiosInstance = axios.create({
-    baseURL: BACKEND_URL,
-    timeout: 1000,
-    headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-    },
-});
-
 export const ApiAuthProvider: IAuthProvider = {
     ...FakeApiAuthProvider,
-    //async signin(username: string, password: string) {
+
+    //async refreshToken(accessToken: string): Promise<boolean> {
         //try {
-            //const { data } = await AxiosInstance.post('/login', {
-                //email: username,
-                //password: password,
+            //const { data } = await Axios.post('/refresh', {
+                //token: accessToken,
             //});
-            //ApiAuthProvider.authResponseData = data;
-            //if (this.authResponseData.accessToken) {
-                //this.accessTokenData = jose.decodeJwt(this.authResponseData.accessToken);
-
-                //this.authStorageItem.accessToken = this.authResponseData.accessToken;
-                //this.authStorageItem.refreshToken = this.authResponseData.refreshToken;
-                //this.authStorageItem.accessTokenExp = this.authResponseData.exp;
-                //this.authStorageItem.uuid = this.accessTokenData.uuid;
-
-                //this.username = this.accessTokenData.name;
-
-                //AuthStorage.save(this.authStorageItem);
-            //}
+            //return this.applyAuthResponseData(<AuthResponseData>data);
         //} catch (error) {
             //if (axios.isAxiosError(error)) {
                 //console.log('Axios error', error)
@@ -199,5 +226,25 @@ export const ApiAuthProvider: IAuthProvider = {
                 ////handleUnexpectedError(error);
             //}
         //}
+        //return false;
+    //},
+
+    //async signin(username: string, password: string): Promise<boolean> {
+        //try {
+            //const { data } = await Axios.post('/login', {
+                //email: username,
+                //password: password,
+            //});
+            //return this.applyAuthResponseData(<AuthResponseData>data);
+        //} catch (error) {
+            //if (axios.isAxiosError(error)) {
+                //console.log('Axios error', error)
+                ////handleAxiosError(error);
+            //} else {
+                //console.log('catch error', error)
+                ////handleUnexpectedError(error);
+            //}
+        //}
+        //return false;
     //},
 };

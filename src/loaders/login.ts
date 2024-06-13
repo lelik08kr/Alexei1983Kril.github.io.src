@@ -4,7 +4,7 @@ import {
 import { ApiAuthProvider } from "./../providers/Auth";
 
 export default async function loginLoader() {
-    if (ApiAuthProvider.isAuthenticated()) {
+    if (await ApiAuthProvider.isAuthenticated()) {
         return redirect("/");
     }
     return null;

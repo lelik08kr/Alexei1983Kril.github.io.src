@@ -1,6 +1,5 @@
 import {
     Link,
-    NavLink,
     Outlet,
     useNavigate,
     useRouteLoaderData,
@@ -88,26 +87,25 @@ function HeaderMenu() {
             {
                 key: 1,
                 label: (
-                    <NavLink
-                     to="/login">
+                    <Link to="/login">
                         {/*
                         <PoweroffOutlined />
                         */}
                         Sign in
-                    </NavLink>
+                    </Link>
                 ),
             },
             {
                 key: 2,
-                // disabled: false,
+                disabled: true,
                 label: (
-                    <NavLink   to="register">
+                    <Link to="#">
                         {/*
                     <Link to="/register">
                         <PoweroffOutlined />
                         */}
                         Sign up
-                    </NavLink>
+                    </Link>
                 ),
             },
         ];

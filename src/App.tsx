@@ -12,6 +12,7 @@ import Error404 from './pages/Error404';
 import LoginPage from './pages/Login';
 import PublicPage from './pages/Public';
 import ProtectedPage from './pages/Protected';
+import Register from "./pages/Registration/Registration";
 
 
 type RouterConfigVars = {};
@@ -51,6 +52,10 @@ const routerCreator = (routerConfig: RouterConfig): any => {
                     path: "protected",
                     loader: protectedLoader,
                     element: <ProtectedPage />,
+                },
+                {
+                    path: "register",
+                    element: <Register />,
                 },
             ],
             errorElement: <Error404 />,

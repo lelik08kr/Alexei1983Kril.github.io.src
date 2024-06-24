@@ -55,7 +55,7 @@ const Register: React.FC = () => {
             >
                 <Input.Password />
             </Form.Item>
-
+<></>
 
 
 
